@@ -12,13 +12,6 @@ creds_path = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
 with open(creds_path, "r") as f:
     creds = json.load(f)
 
-# Initialize the client for live trading data
-client = Client(
-    host="live.ctraderapi.com",
-    port=5036,
-    protocol="protobuf"
-)
-
 # Handle and save the symbol list
 def handle_symbol_list(message):
     symbols = message.payload.symbol
@@ -36,10 +29,18 @@ def handle_symbol_list(message):
     print("Saved all symbols to symbs.json")
     client.stop()
 
-# Assign the handler and run client
+# Initialize the client and assign the handler
+client = Client(
+    host="live.ctraderapi.com",
+    port=5036,
+    protocol="protobuf"
+)
 client.on_symbol_list = handle_symbol_list
+
+# Start the connection
 print("Connecting to cTrader live API and requesting symbols...")
-client.run(
+client.start()
+client.send_symbol_list_request(
     ctid_trader_account_id=creds["accountId"],
     access_token=creds["accessToken"],
     client_id=creds["clientId"],

@@ -36,11 +36,10 @@ def handle_symbol_list(message):
     print("Saved all symbols to symbs.json")
     client.stop()
 
-# Assign the handler and start client
+# Assign the handler and run client
 client.on_symbol_list = handle_symbol_list
 print("Connecting to cTrader live API and requesting symbols...")
-client.start()
-client.send_symbol_list_request(
+client.run(
     ctid_trader_account_id=creds["accountId"],
     access_token=creds["accessToken"],
     client_id=creds["clientId"],

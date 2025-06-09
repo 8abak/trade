@@ -10,7 +10,15 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from ctrader_open_api.client import ClientService
 from ctrader_open_api.client import Client
 from ctrader_open_api.factory import Factory
+<<<<<<< HEAD
 from ctrader_open_api.messages.OpenApiMessages_pb2 import ProtoOASymbolListReq
+=======
+# The generated protobuf messages are located under the `messages` package.
+# The request message for retrieving symbols is `ProtoOASymbolsListReq` (note
+# the plural "Symbols").  The previous import used a non-existent module and a
+# misnamed message which caused an ImportError at runtime.
+from ctrader_open_api.messages.OpenApiMessages_pb2 import ProtoOASymbolsListReq
+>>>>>>> 595dd8ccbbc9a0241d0e1e512fe508bc5fbadf64
 
 # Load credentials from file
 creds_path = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
@@ -59,7 +67,7 @@ client_service.startService(
     access_token=creds["accessToken"]
 )
 
-symbol_list_request = ProtoOASymbolListReq(
+symbol_list_request = ProtoOASymbolsListReq(
     ctidTraderAccountId=creds["accountId"]
 )
 client.send(symbol_list_request)

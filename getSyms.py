@@ -10,7 +10,10 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from ctrader_open_api.client import ClientService
 from ctrader_open_api.client import Client
 from ctrader_open_api.factory import Factory
-from ctrader_open_api.protobuf_model import ProtoOASymbolListReq
+
+# `ProtoOASymbolsListReq` is the protobuf message used to fetch all symbols.
+# Importing the non-existent singular form would raise an ImportError.
+from ctrader_open_api.messages.OpenApiMessages_pb2 import ProtoOASymbolsListReq
 
 # Load credentials from file
 creds_path = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
@@ -59,7 +62,7 @@ client_service.startService(
     access_token=creds["accessToken"]
 )
 
-symbol_list_request = ProtoOASymbolListReq(
+symbol_list_request = ProtoOASymbolsListReq(
     ctidTraderAccountId=creds["accountId"]
 )
 client.send(symbol_list_request)

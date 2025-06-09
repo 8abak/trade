@@ -5,6 +5,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
+from ctrader_open_api.client import ClientService
 from ctrader_open_api.client import Client
 
 # Load credentials from file
@@ -27,9 +28,9 @@ def handle_symbol_list(message):
         json.dump(all_symbols, out, indent=2)
 
     print("Saved all symbols to symbs.json")
-    client.stop()
+    client_service.stop()
 
-# Initialize the client and assign the handler
+# Build and run the client service
 client = Client(
     host="live.ctraderapi.com",
     port=5036,
@@ -37,12 +38,14 @@ client = Client(
 )
 client.on_symbol_list = handle_symbol_list
 
-# Start the connection
+client_service = ClientService(client)
 print("Connecting to cTrader live API and requesting symbols...")
-client.start()
-client.send_symbol_list_request(
-    ctid_trader_account_id=creds["accountId"],
-    access_token=creds["accessToken"],
+client_service.start(
     client_id=creds["clientId"],
-    client_secret=creds["clientSecret"]
+    client_secret=creds["clientSecret"],
+    access_token=creds["accessToken"]
+)
+
+client.send_symbol_list_request(
+    ctid_trader_account_id=creds["accountId"]
 )

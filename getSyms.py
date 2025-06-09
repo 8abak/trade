@@ -39,7 +39,7 @@ client = Client(
 )
 client.on_symbol_list = handle_symbol_list
 
-factory = Factory()
+factory = Factory(client=client)
 client_service = ClientService(client, factory)
 
 print("Connecting to cTrader live API and requesting symbols...")

@@ -16,11 +16,7 @@ with open(os.path.abspath(creds_path), "r") as f:
 client = Client(
     host="live.ctraderapi.com",
     port=5036,
-    protocol="protobuf"
-)
-
-# Authenticate with client credentials
-client.authenticate(
+    protocol="protobuf",
     client_id=creds["clientId"],
     client_secret=creds["clientSecret"],
     access_token=creds["accessToken"]

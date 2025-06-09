@@ -1,26 +1,22 @@
-# File: scripts/getSyms.py
+# File: getSyms.py
 
 import json
 import os
 import sys
-creds_path = os.path.join(os.path.dirname(__file__), "/trade/credentials/creds.json")
-
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from ctrader_open_api.client import Client
 
 # Load credentials from file
-creds_path = os.path.join(os.path.dirname(__file__), "../trade/credentials/creds.json")
-with open(os.path.abspath(creds_path), "r") as f:
+creds_path = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
+with open(creds_path, "r") as f:
     creds = json.load(f)
 
 # Initialize the client for live trading data
 client = Client(
     host="live.ctraderapi.com",
     port=5036,
-    protocol="protobuf",
-    client_id=creds["clientId"],
-    client_secret=creds["clientSecret"],
-    access_token=creds["accessToken"]
+    protocol="protobuf"
 )
 
 # Handle and save the symbol list
@@ -33,7 +29,7 @@ def handle_symbol_list(message):
         "description": symbol.description
     } for symbol in symbols]
 
-    symbs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../credentials/symbs.json"))
+    symbs_path = os.path.join(os.path.dirname(__file__), "credentials/symbs.json")
     with open(symbs_path, "w") as out:
         json.dump(all_symbols, out, indent=2)
 
@@ -44,4 +40,9 @@ def handle_symbol_list(message):
 client.on_symbol_list = handle_symbol_list
 print("Connecting to cTrader live API and requesting symbols...")
 client.start()
-client.send_symbol_list_request(ctid_trader_account_id=creds["accountId"])
+client.send_symbol_list_request(
+    ctid_trader_account_id=creds["accountId"],
+    access_token=creds["accessToken"],
+    client_id=creds["clientId"],
+    client_secret=creds["clientSecret"]
+)

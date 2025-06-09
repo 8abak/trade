@@ -2,9 +2,10 @@ import os
 import json
 from twisted.internet import reactor
 from ctrader_open_api.client import Client
-from ctrader_open_api.factory import Factory
-from ctrader_open_api.messages.OpenApiModelMessages_pb2 import ProtoOAQuoteReq
-from ctrader_open_api.messages.OpenApiMessages_pb2 import ProtoOAPayloadType
+from ctrader_open_api.messages.OpenApiMessages_pb2 import (
+    ProtoOASubscribeSpotsReq,
+    ProtoOASpotEvent,
+)
 
 # Load credentials
 credsPath = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
@@ -16,17 +17,19 @@ goldSymbolId = 41
 
 def onTick(message):
     quote = message.payload
-    print(f"[Tick] Bid: {quote.bid}, Ask: {quote.ask}, Timestamp: {quote.timestamp}")
+    print(
+        f"[Tick] Bid: {quote.bid}, Ask: {quote.ask}, Timestamp: {quote.timestamp}"
+    )
 
 def onConnected(client):
     print("✅ Connected")
-    client.registerCustomHandler(ProtoOAPayloadType.PROTO_OA_QUOTE_RES, onTick)
+    client.registerCustomHandler(ProtoOASpotEvent().payloadType, onTick)
 
-    quoteReq = ProtoOAQuoteReq(
+    quoteReq = ProtoOASubscribeSpotsReq(
         ctidTraderAccountId=creds["ctidTraderAccountId"],
-        symbolId=goldSymbolId
+        symbolId=goldSymbolId,
     )
-    client.send(ProtoOAPayloadType.PROTO_OA_QUOTE_REQ, quoteReq)
+    client.send(ProtoOASubscribeSpotsReq().payloadType, quoteReq)
 
 client = Client(
     clientId=creds["clientId"],

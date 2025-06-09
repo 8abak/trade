@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from ctrader_open_api.client import ClientService
 from ctrader_open_api.client import Client
+from ctrader_open_api.factory import Factory
 
 # Load credentials from file
 creds_path = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
@@ -38,7 +39,9 @@ client = Client(
 )
 client.on_symbol_list = handle_symbol_list
 
-client_service = ClientService(client)
+factory = Factory()
+client_service = ClientService(client, factory)
+
 print("Connecting to cTrader live API and requesting symbols...")
 client_service.start(
     client_id=creds["clientId"],

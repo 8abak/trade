@@ -10,14 +10,21 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from ctrader_open_api.client import ClientService
 from ctrader_open_api.client import Client
 from ctrader_open_api.factory import Factory
+from ctrader_open_api.protobuf_model import ProtoOASymbolListReq
 
 # Load credentials from file
 creds_path = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
 with open(creds_path, "r") as f:
     creds = json.load(f)
 
-# Handle and save the symbol list
+# Handler for incoming symbol list
 def handle_symbol_list(message):
+    if not hasattr(message.payload, 'symbol'):
+        print("No symbols found in response.")
+        client_service.stop()
+        reactor.stop()
+        return
+
     symbols = message.payload.symbol
     print(f"Received {len(symbols)} symbols.")
     all_symbols = [{
@@ -34,7 +41,7 @@ def handle_symbol_list(message):
     client_service.stop()
     reactor.stop()
 
-# Build and run the client service
+# Set up client and service
 client = Client(
     host="live.ctraderapi.com",
     port=5036,
@@ -43,17 +50,18 @@ client = Client(
 client.on_symbol_list = handle_symbol_list
 
 factory = Factory(client=client)
-client_service = ClientService(client, factory)
+client_service = ClientService(client=client, factory=factory)
 
 print("Connecting to cTrader live API and requesting symbols...")
-client_service.start(
+client_service.startService(
     client_id=creds["clientId"],
     client_secret=creds["clientSecret"],
     access_token=creds["accessToken"]
 )
 
-client.send_symbol_list_request(
-    ctid_trader_account_id=creds["accountId"]
+symbol_list_request = ProtoOASymbolListReq(
+    ctidTraderAccountId=creds["accountId"]
 )
+client.send(symbol_list_request)
 
 reactor.run()

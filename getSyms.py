@@ -9,7 +9,7 @@ creds_path = os.path.join(os.path.dirname(__file__), "/trade/credentials/creds.j
 from ctrader_open_api.client import Client
 
 # Load credentials from file
-creds_path = os.path.join(os.path.dirname(__file__), "../credentials/creds.json")
+creds_path = os.path.join(os.path.dirname(__file__), "../trade/credentials/creds.json")
 with open(os.path.abspath(creds_path), "r") as f:
     creds = json.load(f)
 

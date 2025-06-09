@@ -3,7 +3,7 @@
 import json
 import os
 import sys
-creds_path = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
+creds_path = os.path.join(os.path.dirname(__file__), "/trade/credentials/creds.json")
 
 
 from ctrader_open_api.client import Client

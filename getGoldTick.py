@@ -3,7 +3,8 @@ import json
 from twisted.internet import reactor
 from ctrader_open_api.client import Client
 from ctrader_open_api.factory import Factory
-from ctrader_open_api.messages.OpenApiMessages_pb2 import ProtoOAQuoteReq, ProtoOAPayloadType
+from ctrader_open_api.messages.OpenApiModelMessages_pb2 import ProtoOAQuoteReq
+from ctrader_open_api.messages.OpenApiMessages_pb2 import ProtoOAPayloadType
 
 # Load credentials
 credsPath = os.path.join(os.path.dirname(__file__), "credentials/creds.json")
@@ -21,7 +22,7 @@ def onConnected(client):
     print("✅ Connected")
     client.registerCustomHandler(ProtoOAPayloadType.PROTO_OA_QUOTE_RES, onTick)
 
-    quoteReq = Factory.ProtoOAQuoteReq(
+    quoteReq = ProtoOAQuoteReq(
         ctidTraderAccountId=creds["ctidTraderAccountId"],
         symbolId=goldSymbolId
     )

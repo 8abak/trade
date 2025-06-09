@@ -3,6 +3,8 @@
 import json
 import os
 import sys
+from twisted.internet import reactor
+
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from ctrader_open_api.client import ClientService
@@ -30,6 +32,7 @@ def handle_symbol_list(message):
 
     print("Saved all symbols to symbs.json")
     client_service.stop()
+    reactor.stop()
 
 # Build and run the client service
 client = Client(
@@ -43,7 +46,7 @@ factory = Factory(client=client)
 client_service = ClientService(client, factory)
 
 print("Connecting to cTrader live API and requesting symbols...")
-client_service.run(
+client_service.start(
     client_id=creds["clientId"],
     client_secret=creds["clientSecret"],
     access_token=creds["accessToken"]
@@ -52,3 +55,5 @@ client_service.run(
 client.send_symbol_list_request(
     ctid_trader_account_id=creds["accountId"]
 )
+
+reactor.run()

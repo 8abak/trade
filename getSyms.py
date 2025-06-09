@@ -43,7 +43,7 @@ factory = Factory(client=client)
 client_service = ClientService(client, factory)
 
 print("Connecting to cTrader live API and requesting symbols...")
-client_service.start(
+client_service.run(
     client_id=creds["clientId"],
     client_secret=creds["clientSecret"],
     access_token=creds["accessToken"]

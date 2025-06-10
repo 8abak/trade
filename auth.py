@@ -1,4 +1,4 @@
-from ctrader_open_api.endpoints import EndPoints
+from endpoints import EndPoints
 import requests
 
 class Auth:

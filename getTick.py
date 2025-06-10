@@ -5,7 +5,9 @@ from twisted.internet import reactor
 from client import Client
 from factory import Factory
 from tcpProtocol import TcpProtocol
-from OpenApiMessages_pb2 import ProtoOASubscribeSpotsReq, ProtoOAPayloadType
+from OpenApiMessages_pb2 import ProtoOASubscribeSpotsReq
+from OpenApiModelMessages_pb2 import ProtoOAPayloadType
+
 
 # Fix local imports
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))

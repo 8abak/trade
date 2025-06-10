@@ -34,7 +34,11 @@ client = Client(
 )
 
 # Bind handler
-client.on(ProtoOAPayloadType.PROTO_OA_SPOT_EVENT, handleTick)
+def messageRouter(_, message):
+    if message.payloadType == ProtoOAPayloadType.PROTO_OA_SPOT_EVENT:
+        handleTick(message)
+
+client.setMessageReceivedCallback(messageRouter)
 
 # On connection ready
 def start():

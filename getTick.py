@@ -52,5 +52,6 @@ def start():
 client.setConnectedCallback(lambda _: start())
 
 # Run
-client.run()
+client.startService()
+
 reactor.run()

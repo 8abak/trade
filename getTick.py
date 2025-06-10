@@ -21,13 +21,19 @@ def handleQuote(message):
     reactor.stop()
 
 # Init client
-client = Client(
-    host="live.ctraderapi.com",
-    port=5035,
+from tcpProtocol import TcpProtocol
+
+protocol=TcpProtocol(
     clientId=creds["clientId"],
     clientSecret=creds["clientSecret"],
-    accessToken=creds["accessToken"],
+    accessToken=["accessToken"],
     ctidTraderAccountId=creds["accountId"]
+)
+
+client=Client(
+    host="live.ctraderapi.com",
+    port=5036,
+    protocol=protocol
 )
 
 client.on(ProtoOAPayloadType.PROTO_OA_QUOTE_RES, handleQuote)

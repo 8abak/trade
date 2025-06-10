@@ -22,3 +22,8 @@ class Factory(ClientFactory):
 
     def received(self, message):
         self.client._received(message)
+        
+    @staticmethod
+    def forProtocol(protocolInstance, client):
+        protocolInstance.factory = Factory(protocolInstance, client)
+        return protocolInstance

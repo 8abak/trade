@@ -8,7 +8,6 @@ from tcpProtocol import TcpProtocol
 from OpenApiMessages_pb2 import ProtoOASubscribeSpotsReq
 from OpenApiModelMessages_pb2 import ProtoOAPayloadType
 
-
 # Fix local imports
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
@@ -23,6 +22,11 @@ def handleTick(message):
     client.stop()
     reactor.stop()
 
+# Message dispatcher
+def messageRouter(_, message):
+    if message.payloadType == ProtoOAPayloadType.PROTO_OA_SPOT_EVENT:
+        handleTick(message)
+
 # Create protocol
 protocol = TcpProtocol()
 
@@ -32,11 +36,6 @@ client = Client(
     port=5035,
     protocol=protocol
 )
-
-# Bind handler
-def messageRouter(_, message):
-    if message.payloadType == ProtoOAPayloadType.PROTO_OA_SPOT_EVENT:
-        handleTick(message)
 
 client.setMessageReceivedCallback(messageRouter)
 
@@ -50,7 +49,7 @@ def start():
 
     client.send(req)
 
-client.onReady = start
+client.setConnectedCallback(lambda _: start())
 
 # Run
 client.run()

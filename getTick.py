@@ -6,7 +6,8 @@ import json
 from twisted.internet import reactor
 from client import Client
 from factory import Factory
-from OpenApiMessages_pb2 import ProtoOAPayloadType
+import OpenApiCommonMessages_pb2
+print(dir(OpenApiCommonMessages_pb2))
 
 # Load credentials (same folder)
 with open("creds.json", "r") as f:

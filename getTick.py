@@ -1,21 +1,21 @@
 import json
-import sys
 import os
+import sys
 from twisted.internet import reactor
 from client import Client
 from factory import Factory
 from tcpProtocol import TcpProtocol
-from OpenApiMessages_pb2 import ProtoOAQuoteReq, ProtoOAPayloadType
+from OpenApiMessages_pb2 import ProtoOASubscribeSpotsReq, ProtoOAPayloadType
 
-# Ensure local directory is in path
+# Fix local imports
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-# Load credentials from local creds.json
+# Load credentials
 with open("creds.json", "r") as f:
     creds = json.load(f)
 
-# Handle incoming tick
-def handleQuote(message):
+# Tick response handler
+def handleTick(message):
     print("✅ Tick received:")
     print(message)
     client.stop()
@@ -24,27 +24,28 @@ def handleQuote(message):
 # Create protocol
 protocol = TcpProtocol()
 
-# Create and start client
+# Init client
 client = Client(
     host="live.ctraderapi.com",
     port=5035,
     protocol=protocol
 )
 
-# Attach event handler
-client.on(ProtoOAPayloadType.PROTO_OA_QUOTE_RES, handleQuote)
+# Bind handler
+client.on(ProtoOAPayloadType.PROTO_OA_SPOT_EVENT, handleTick)
 
-# Once client is ready, send quote request
+# On connection ready
 def start():
-    print("🔐 Authenticated. Requesting tick...")
-    req = Factory.createQuoteRequest(
-        accountId=creds["accountId"],
-        symbolId=creds["symbolId"]
-    )
+    print("🔐 Connected. Subscribing to tick data...")
+
+    req = ProtoOASubscribeSpotsReq()
+    req.ctidTraderAccountId = creds["accountId"]
+    req.symbolId.append(creds["symbolId"])
+
     client.send(req)
 
 client.onReady = start
 
-# Start client and reactor
+# Run
 client.run()
 reactor.run()
